@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RENT LAP | Campus Laptop Rentals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07040f; --panel:#0e0a1f; --panel2:#150f2e;
+  --cyan:#00f0ff; --pink:#ff2bd6; --yellow:#fcee0a; --green:#39ff88; --red:#ff3860;
+  --text:#e6e8ff; --muted:#8a86b5;
+  --bounce:cubic-bezier(.34,1.56,.64,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:'Rajdhani',sans-serif; font-size:18px; line-height:1.4;
+  min-height:100vh; overflow-x:hidden;
+}
+.bg-grid{position:fixed;inset:0;z-index:-2;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 0%,#2a0b4d 0%,var(--bg) 60%);}
+.bg-grid::before{content:"";position:absolute;left:-50%;right:-50%;bottom:-40%;height:90%;
+  background-image:linear-gradient(var(--pink) 1px,transparent 1px),linear-gradient(90deg,var(--pink) 1px,transparent 1px);
+  background-size:60px 60px; opacity:.22;
+  transform:perspective(500px) rotateX(62deg); animation:gridMove 4s linear infinite;}
+@keyframes gridMove{to{background-position:0 60px}}
+.scan{position:fixed;inset:0;z-index:50;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px);mix-blend-mode:multiply}
+
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;padding:14px 5vw;background:rgba(7,4,15,.8);backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(0,240,255,.35);box-shadow:0 0 25px rgba(0,240,255,.15)}
+.logo{font-family:Orbitron,sans-serif;font-weight:900;font-size:1.7rem;letter-spacing:.12em;
+  color:var(--cyan);text-shadow:0 0 12px var(--cyan);position:relative;cursor:pointer;
+  transition:transform .4s var(--bounce)}
+.logo:hover{transform:scale(1.12) rotate(-2deg)}
+.logo span{color:var(--pink);text-shadow:0 0 12px var(--pink)}
+.logo::before,.logo::after{content:attr(data-text);position:absolute;left:0;top:0;opacity:.7}
+.logo::before{color:var(--pink);animation:glitch1 3s infinite steps(1);clip-path:inset(0 0 60% 0)}
+.logo::after{color:var(--yellow);animation:glitch2 3s infinite steps(1);clip-path:inset(60% 0 0 0)}
+@keyframes glitch1{0%,92%,100%{transform:translate(0)}93%{transform:translate(-3px,1px)}96%{transform:translate(3px,-1px)}}
+@keyframes glitch2{0%,90%,100%{transform:translate(0)}91%{transform:translate(3px,1px)}95%{transform:translate(-3px,-1px)}}
+
+nav{display:flex;gap:8px;flex-wrap:wrap}
+nav button{font:600 .9rem Orbitron,sans-serif;letter-spacing:.08em;text-transform:uppercase;
+  background:transparent;color:var(--text);border:1px solid var(--muted);padding:9px 15px;cursor:pointer;
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+  transition:transform .35s var(--bounce),background .25s,color .25s,border-color .25s,box-shadow .25s}
+nav button:hover{transform:translateY(-4px) scale(1.07);border-color:var(--cyan);color:var(--cyan)}
+nav button:active{transform:scale(.92)}
+nav button.active{background:var(--cyan);color:#000;border-color:var(--cyan);box-shadow:0 0 18px var(--cyan)}
+nav button.lend-btn{background:var(--pink);color:#000;border-color:var(--pink);box-shadow:0 0 16px rgba(255,43,214,.6);
+  animation:pulseBounce 2.4s var(--bounce) infinite}
+nav button.lend-btn:hover{color:#000;border-color:#ff5ae0;background:#ff5ae0}
+nav button.lend-btn.active{background:var(--yellow);border-color:var(--yellow);box-shadow:0 0 18px var(--yellow);animation:none}
+button:focus-visible,a:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+.fab{position:fixed;right:20px;bottom:24px;z-index:40;font:900 1rem Orbitron,sans-serif;letter-spacing:.1em;
+  text-transform:uppercase;cursor:pointer;border:none;color:#000;background:var(--pink);padding:15px 22px;
+  border-radius:40px;box-shadow:0 0 26px rgba(255,43,214,.75),0 8px 20px rgba(0,0,0,.5);
+  animation:fabIn .8s var(--bounce) both,fabPulse 2.6s ease-in-out 1s infinite;
+  transition:transform .35s var(--bounce),background .25s}
+.fab:hover{transform:scale(1.12) translateY(-4px);background:#ff5ae0}
+.fab:active{transform:scale(.92)}
+.fab.hide{display:none}
+@keyframes fabIn{from{opacity:0;transform:translateY(80px) scale(.5)}to{opacity:1;transform:none}}
+@keyframes fabPulse{0%,100%{box-shadow:0 0 22px rgba(255,43,214,.6),0 8px 20px rgba(0,0,0,.5)}50%{box-shadow:0 0 42px rgba(255,43,214,1),0 8px 20px rgba(0,0,0,.5)}}
+@media(max-width:520px){.fab{right:12px;bottom:14px;padding:13px 18px}}
+.qr-wrap{display:flex;justify-content:center;margin:6px 0 10px}
+.qr-wrap canvas{width:min(280px,100%);height:auto;image-rendering:pixelated;box-shadow:0 0 28px rgba(0,240,255,.6)}
+.badge.res{background:var(--yellow);color:#000;box-shadow:0 0 12px var(--yellow)}
+.badge-n{display:inline-block;min-width:20px;height:20px;line-height:20px;border-radius:10px;background:var(--yellow);color:#000;
+  font:900 .7rem Orbitron,sans-serif;margin-left:6px;padding:0 5px;text-align:center;letter-spacing:0;animation:pulseBounce 1.6s var(--bounce) infinite}
+.badge-n[hidden]{display:none}
+nav button.active .badge-n{background:#000;color:var(--yellow)}
+.status{display:inline-block;font:700 .72rem Orbitron,sans-serif;letter-spacing:.08em;padding:4px 12px;text-transform:uppercase}
+.st-pending{background:var(--yellow);color:#000}
+.st-approved{background:var(--cyan);color:#000}
+.st-active{background:var(--green);color:#000}
+.st-returned{background:var(--green);color:#000}
+.st-declined,.st-cancelled{background:var(--red);color:#fff}
+.otp-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.otp-row input{width:170px;font:700 1.3rem Orbitron,sans-serif;letter-spacing:.25em;text-align:center}
+.actions-row{display:flex;gap:10px;flex-wrap:wrap}
+.sms{position:fixed;top:84px;right:16px;z-index:90;width:min(330px,calc(100vw - 32px));background:#0a0618;cursor:pointer;
+  border:2px solid var(--green);padding:14px 16px;box-shadow:0 0 30px rgba(57,255,136,.5);
+  transform:translateX(130%);transition:transform .6s var(--bounce)}
+.sms.show{transform:none}
+.sms small{display:block;color:var(--green);font:700 .7rem Orbitron,sans-serif;letter-spacing:.1em;margin-bottom:6px}
+.sms p{font-size:1rem}
+.sms .otp{font:900 1.9rem Orbitron,sans-serif;color:var(--yellow);letter-spacing:.25em;margin-top:6px;text-shadow:0 0 12px rgba(252,238,10,.6)}
+.sms .demo{font-size:.75rem;color:var(--muted);margin-top:6px}
+
+main{padding:0 5vw 80px;max-width:1300px;margin:auto}
+.view{display:none}.view.active{display:block;animation:viewIn .6s var(--bounce)}
+@keyframes viewIn{from{opacity:0;transform:translateY(40px) scale(.97)}to{opacity:1;transform:none}}
+
+.hero{text-align:center;padding:60px 0 30px}
+.hero h1{font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(2.2rem,7vw,5rem);line-height:1.05;
+  text-transform:uppercase;letter-spacing:.05em}
+.hero h1 .c{color:var(--cyan);text-shadow:0 0 20px var(--cyan)}
+.hero h1 .p{color:var(--pink);text-shadow:0 0 20px var(--pink)}
+.hero p{max-width:660px;margin:18px auto 0;color:var(--muted);font-size:1.15rem}
+.price-tag{display:inline-block;margin:24px 8px 0;font:700 1.2rem Orbitron,sans-serif;color:#000;background:var(--yellow);
+  padding:10px 24px;clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
+  animation:pulseBounce 2s var(--bounce) infinite;box-shadow:0 0 25px rgba(252,238,10,.5)}
+.price-tag.alt{background:var(--green);animation-delay:.4s;box-shadow:0 0 25px rgba(57,255,136,.5)}
+@keyframes pulseBounce{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.hero .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:36px 0}
+.step{background:var(--panel);border:1px solid rgba(255,43,214,.4);padding:18px;text-align:center;
+  transition:transform .4s var(--bounce),box-shadow .3s}
+.step:hover{transform:translateY(-8px) rotate(-1deg);box-shadow:0 0 25px rgba(255,43,214,.4)}
+.step b{display:block;font:900 2rem Orbitron;color:var(--pink);text-shadow:0 0 10px var(--pink)}
+
+.toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:20px 0}
+.toolbar h2{font-family:Orbitron;text-transform:uppercase;letter-spacing:.1em;color:var(--cyan);
+  text-shadow:0 0 10px rgba(0,240,255,.6);font-size:1.4rem;margin-right:auto}
+input,select{font:500 1rem Rajdhani,sans-serif;background:#0a0618;color:var(--text);border:1px solid var(--muted);
+  padding:10px 12px;outline:none;transition:border-color .25s,box-shadow .25s,transform .3s var(--bounce);width:100%}
+input:focus,select:focus{border-color:var(--cyan);box-shadow:0 0 14px rgba(0,240,255,.5);transform:scale(1.02)}
+.toolbar input,.toolbar select{width:auto;min-width:180px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:24px}
+.card{position:relative;background:linear-gradient(160deg,var(--panel2),var(--panel));
+  border:1px solid rgba(0,240,255,.4);padding:20px;
+  clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,22px 100%,0 calc(100% - 22px));
+  opacity:0;animation:cardIn .7s var(--bounce) forwards;
+  transition:transform .45s var(--bounce),border-color .3s,filter .3s}
+@keyframes cardIn{from{opacity:0;transform:translateY(60px) scale(.85)}to{opacity:1;transform:none}}
+.card:hover{transform:translateY(-12px) scale(1.04) rotate(.6deg);border-color:var(--pink);
+  filter:drop-shadow(0 0 18px rgba(255,43,214,.6))}
+.card.acc{border-color:rgba(57,255,136,.45)}
+.card h3{font:700 1.2rem Orbitron;color:var(--text);margin-bottom:4px;padding-right:80px}
+.owner{color:var(--muted);font-size:.95rem;margin-bottom:12px}
+.owner b{color:var(--pink)}
+.chip{display:inline-block;font:700 .72rem Orbitron;letter-spacing:.08em;text-transform:uppercase;
+  color:#000;background:var(--green);padding:3px 10px;margin-bottom:8px}
+.badge{position:absolute;top:14px;right:34px;font:700 .7rem Orbitron;padding:3px 9px;letter-spacing:.1em}
+.badge.free{background:var(--green);color:#000;box-shadow:0 0 12px var(--green)}
+.badge.busy{background:var(--red);color:#fff;box-shadow:0 0 12px var(--red)}
+.specs{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:.98rem;margin:12px 0 16px;
+  border-top:1px dashed rgba(0,240,255,.3);padding-top:12px}
+.specs dt{color:var(--cyan);font-weight:600;text-transform:uppercase;font-size:.8rem;letter-spacing:.08em;padding-top:2px}
+.specs dd{color:var(--text)}
+.card-foot{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.rate{font:700 1.2rem Orbitron;color:var(--yellow);text-shadow:0 0 10px rgba(252,238,10,.6)}
+.rate small{font:500 .75rem Rajdhani;color:var(--muted)}
+
+.btn{font:700 .9rem Orbitron,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:none;
+  padding:11px 20px;background:var(--pink);color:#000;
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+  transition:transform .35s var(--bounce),box-shadow .3s,background .25s}
+.btn:hover{transform:scale(1.12) translateY(-3px);box-shadow:0 0 22px var(--pink);background:#ff5ae0}
+.btn:active{transform:scale(.9)}
+.btn:disabled{background:#3a3555;color:#777;cursor:not-allowed;transform:none;box-shadow:none}
+.btn.cyan{background:var(--cyan)}.btn.cyan:hover{box-shadow:0 0 22px var(--cyan);background:#5cf6ff}
+.btn.green{background:var(--green)}.btn.green:hover{box-shadow:0 0 22px var(--green);background:#7dffb0}
+.btn.ghost{background:transparent;color:var(--text);outline:1px solid var(--muted);outline-offset:-1px}
+
+.form{background:var(--panel);border:1px solid rgba(255,43,214,.5);padding:26px;margin-top:20px;
+  box-shadow:0 0 30px rgba(255,43,214,.15)}
+.form .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:16px}
+fieldset{border:none;min-width:0}
+label{display:block;font:600 .8rem Orbitron;letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);margin-bottom:6px}
+.rate-prev{font:700 1.1rem Orbitron;color:var(--yellow);padding-top:8px}
+
+.empty{text-align:center;color:var(--muted);padding:50px 10px;border:1px dashed var(--muted);margin-top:16px}
+.rental{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+  background:var(--panel);border-left:4px solid var(--cyan);padding:18px 22px;margin-top:16px;
+  animation:cardIn .6s var(--bounce) both;transition:transform .35s var(--bounce)}
+.rental:hover{transform:translateX(8px)}
+.rental.done{border-color:var(--green);opacity:.88}
+.meter{text-align:center}
+.timer{font:900 1.9rem Orbitron;color:var(--cyan);text-shadow:0 0 12px var(--cyan)}
+.cost{font:700 1.2rem Orbitron;color:var(--yellow);text-shadow:0 0 10px rgba(252,238,10,.6)}
+.meter small{display:block;color:var(--muted);font-size:.8rem;letter-spacing:.06em}
+
+.overlay{position:fixed;inset:0;z-index:60;background:rgba(3,1,10,.8);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:16px}
+.overlay.open{display:flex;animation:fade .3s}
+@keyframes fade{from{opacity:0}}
+.modal{width:min(520px,100%);max-height:92vh;overflow:auto;background:var(--panel);
+  border:2px solid var(--cyan);padding:26px;box-shadow:0 0 40px rgba(0,240,255,.4);
+  animation:pop .6s var(--bounce)}
+@keyframes pop{from{opacity:0;transform:scale(.5) rotate(-4deg)}to{opacity:1;transform:none}}
+.modal h3{font:900 1.3rem Orbitron;color:var(--pink);text-shadow:0 0 10px var(--pink);margin-bottom:14px;text-transform:uppercase}
+.modal .field{margin-bottom:14px}
+.pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:6px}
+.pay-opt{position:relative;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font:600 1rem Rajdhani;color:var(--text)}
+.pay-opt input{position:absolute;opacity:0;width:0;height:0}
+.pay-opt span{display:block;text-align:center;border:1px solid var(--muted);padding:12px 8px;
+  transition:transform .35s var(--bounce),border-color .25s,background .25s,box-shadow .25s}
+.pay-opt span b{display:block;font:700 .85rem Orbitron;letter-spacing:.06em;text-transform:uppercase}
+.pay-opt:hover span{transform:translateY(-3px) scale(1.04)}
+.pay-opt input:checked + span{border-color:var(--yellow);background:rgba(252,238,10,.1);box-shadow:0 0 16px rgba(252,238,10,.45);transform:scale(1.05)}
+.bill{background:#0a0618;border:1px dashed var(--yellow);padding:14px;margin:14px 0}
+.bill .line{display:flex;justify-content:space-between;padding:3px 0;gap:12px}
+.bill .total{font:900 1.5rem Orbitron;color:var(--yellow);text-shadow:0 0 12px rgba(252,238,10,.6);
+  border-top:1px solid var(--yellow);margin-top:8px;padding-top:8px}
+.bill .total span:last-child{display:inline-block;animation:pulseBounce 1.5s var(--bounce) infinite}
+.modal .actions{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;margin-top:8px}
+.note{font-size:.88rem;color:var(--muted);margin-top:10px}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(120px);z-index:80;
+  background:var(--green);color:#000;font:700 .95rem Orbitron;padding:12px 24px;
+  transition:transform .5s var(--bounce);box-shadow:0 0 25px var(--green)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.err{background:var(--red);color:#fff;box-shadow:0 0 25px var(--red)}
+footer{text-align:center;color:var(--muted);padding:30px;border-top:1px solid rgba(0,240,255,.2);font-size:.9rem}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div><div class="scan"></div>
+
+<header>
+  <div class="logo" data-text="RENT LAP" onclick="show('home')">RENT <span>LAP</span></div>
+  <nav>
+    <button data-v="home" class="active">Home</button>
+    <button data-v="browse">Laptops</button>
+    <button data-v="accessories">Accessories</button>
+    <button data-v="list" class="lend-btn" aria-label="Lend your laptop or accessory and earn money">+ Lend &amp; Earn</button>
+    <button data-v="requests">Requests<span id="reqBadge" class="badge-n" hidden>0</span></button>
+    <button data-v="rentals">My Rentals<span id="rentBadge" class="badge-n" hidden>0</span></button>
+    <button id="qrBtn" onclick="openQr()" aria-label="Login on your mobile with a QR code">&#128241; QR Login</button>
+  </nav>
+</header>
+
+<main>
+  <!-- HOME -->
+  <section id="home" class="view active">
+    <div class="hero">
+      <h1>Borrow <span class="c">tech</span><br>from a <span class="p">batchmate</span></h1>
+      <p>RENT LAP is the campus marketplace where students lend and rent laptops and accessories by the hour. You pay only for the exact time you use, by UPI or Cash on Delivery.</p>
+      <div class="price-tag">Laptops &#8377;40 / hour</div><div class="price-tag alt">Accessories from &#8377;5 / hour</div>
+      <div class="cta">
+        <button class="btn cyan" onclick="show('browse')">Rent a laptop</button>
+        <button class="btn green" onclick="show('accessories')">Rent accessories</button>
+        <button class="btn" onclick="goLend('laptop')">Lend yours &amp; earn</button>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step"><b>01</b>Pick a laptop or accessory</div>
+      <div class="step"><b>02</b>Send a request, the lender approves</div>
+      <div class="step"><b>03</b>Meet at the pickup spot, enter the OTP</div>
+      <div class="step"><b>04</b>Return it and pay for the exact time</div>
+    </div>
+  </section>
+
+  <!-- LAPTOPS -->
+  <section id="browse" class="view">
+    <div class="toolbar">
+      <h2>Available Rigs</h2>
+      <input id="q" placeholder="Search brand, CPU, GPU...">
+      <select id="filter">
+        <option value="all">All</option><option value="free">Available only</option>
+        <option value="gpu">With GPU</option>
+      </select>
+      <button class="btn" onclick="goLend('laptop')">+ Lend laptop</button>
+    </div>
+    <div id="grid" class="grid"></div>
+  </section>
+
+  <!-- ACCESSORIES -->
+  <section id="accessories" class="view">
+    <div class="toolbar">
+      <h2>Accessories</h2>
+      <input id="aq" placeholder="Search accessories...">
+      <select id="acatFilter">
+        <option value="all">All categories</option>
+        <option value="mouse">Mouse</option><option value="keyboard">Keyboard</option>
+        <option value="headphones">Headphones</option><option value="harddisk">Hard Disk</option>
+        <option value="other">Other</option>
+      </select>
+      <button class="btn green" onclick="goLend('accessory')">+ Lend accessory</button>
+    </div>
+    <p class="note" style="margin:-6px 0 18px">Accessory rent depends on its worth: <b>1% of the item's value per hour</b>, charged for the exact time used.</p>
+    <div id="accGrid" class="grid"></div>
+  </section>
+
+  <!-- LEND -->
+  <section id="list" class="view">
+    <div class="toolbar"><h2>Lend Something</h2></div>
+    <form id="lendForm" class="form">
+      <div class="row">
+        <div><label>What are you lending?</label>
+          <select name="kind" id="kind"><option value="laptop">Laptop</option><option value="accessory">Accessory</option></select></div>
+        <div><label>Your name</label><input name="owner" required maxlength="40"></div>
+        <div><label>Branch / Year</label><input name="batch" placeholder="CSE - 2nd year" maxlength="30"></div>
+        <div><label>Your mobile (10 digits, India)</label><input name="phone" type="tel" inputmode="numeric" required maxlength="10" pattern="[6-9][0-9]{9}" title="10-digit Indian mobile number starting with 6-9" placeholder="9876543210" oninput="digits(this)"></div>
+        <div><label>UPI ID (to receive money)</label><input name="upi" required placeholder="name@upi" maxlength="50"></div>
+      </div>
+
+      <fieldset id="fLap">
+        <div class="row">
+          <div><label>Laptop model</label><input name="name" required placeholder="Dell Inspiron 15" maxlength="50"></div>
+          <div><label>Processor</label><input name="cpu" required placeholder="Intel i5 12th Gen" maxlength="50"></div>
+          <div><label>RAM</label><input name="ram" required placeholder="16 GB DDR4" maxlength="30"></div>
+        </div>
+        <div class="row">
+          <div><label>Storage</label><input name="storage" required placeholder="512 GB SSD" maxlength="30"></div>
+          <div><label>Graphics</label><input name="gpu" placeholder="Integrated / RTX 3050" maxlength="40"></div>
+          <div><label>Display</label><input name="display" placeholder='15.6" FHD 144Hz' maxlength="40"></div>
+        </div>
+        <div class="row">
+          <div><label>Battery</label><input name="battery" placeholder="6 hours" maxlength="30"></div>
+          <div><label>Operating system</label><input name="os" placeholder="Windows 11" maxlength="30"></div>
+          <div><label>Condition</label>
+            <select name="cond"><option>Like new</option><option selected>Good</option><option>Fair</option></select></div>
+        </div>
+        <p class="note" style="margin:0 0 16px">Laptop rate is fixed at &#8377;40 per hour.</p>
+      </fieldset>
+
+      <fieldset id="fAcc" disabled>
+        <div class="row">
+          <div><label>Accessory name</label><input name="aname" required placeholder="Logitech M331 Mouse" maxlength="50"></div>
+          <div><label>Category</label>
+            <select name="acat"><option value="mouse">Mouse</option><option value="keyboard">Keyboard</option>
+              <option value="headphones">Headphones</option><option value="harddisk">Hard Disk</option><option value="other">Other</option></select></div>
+          <div><label>Worth of item (&#8377;)</label><input name="aworth" id="aworth" type="number" min="50" max="100000" required placeholder="1500">
+            <div class="rate-prev" id="ratePrev"></div></div>
+        </div>
+        <div class="row">
+          <div><label>Details</label><input name="adetails" placeholder="Wireless, 2.4GHz, USB receiver" maxlength="80"></div>
+          <div><label>Condition</label>
+            <select name="acond"><option>Like new</option><option selected>Good</option><option>Fair</option></select></div>
+        </div>
+      </fieldset>
+
+      <button class="btn" type="submit">Publish</button>
+    </form>
+  </section>
+
+  <!-- REQUESTS (lender) -->
+  <section id="requests" class="view">
+    <div class="toolbar"><h2>Lender Requests</h2></div>
+    <div id="meBox"></div>
+    <div id="reqList"></div>
+  </section>
+
+  <!-- RENTALS -->
+  <section id="rentals" class="view">
+    <div class="toolbar"><h2>My Rentals</h2></div>
+    <div id="rentalList"></div>
+  </section>
+</main>
+
+<footer>RENT LAP &copy; 2026 &mdash; Built by students, for students. Demo: payments are simulated.</footer>
+
+<button id="fab" class="fab" onclick="goLend('laptop')" aria-label="Lend your laptop or accessory">+ Lend</button>
+
+<div id="sms" class="sms" role="status" aria-live="polite"></div>
+<div id="overlay" class="overlay"><div id="modal" class="modal"></div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+const LAPTOP_RATE = 40;
+const KEY = 'rentlap_v3';
+const CATS = {mouse:['Mouse','🖱️'],keyboard:['Keyboard','⌨️'],headphones:['Headphones','🎧'],harddisk:['Hard Disk','💾'],other:['Other','🔌']};
+const accRate = w => Math.max(1, Math.ceil(w * 0.01));
+
+const seed = {
+  items: [
+    {kind:'laptop',id:'l1',name:'ASUS TUF Gaming F15',owner:'Arjun Reddy',batch:'CSE - 3rd year',upi:'arjun@oksbi',lphone:'9876500001',cpu:'Intel Core i7 11th Gen',ram:'16 GB DDR4',storage:'512 GB NVMe SSD',gpu:'NVIDIA RTX 3050 4GB',display:'15.6" FHD 144Hz',battery:'5 hours',os:'Windows 11',cond:'Good',rate:LAPTOP_RATE,status:'available'},
+    {kind:'laptop',id:'l2',name:'HP Pavilion 14',owner:'Sneha Rao',batch:'ECE - 2nd year',upi:'sneha@okaxis',lphone:'9876500002',cpu:'AMD Ryzen 5 5500U',ram:'8 GB DDR4',storage:'512 GB SSD',gpu:'Integrated Radeon',display:'14" FHD IPS',battery:'8 hours',os:'Windows 11',cond:'Like new',rate:LAPTOP_RATE,status:'available'},
+    {kind:'laptop',id:'l3',name:'MacBook Air M1',owner:'Karthik Varma',batch:'IT - 4th year',upi:'karthik@okhdfc',lphone:'9876500003',cpu:'Apple M1 8-core',ram:'8 GB Unified',storage:'256 GB SSD',gpu:'Apple 7-core GPU',display:'13.3" Retina',battery:'14 hours',os:'macOS',cond:'Like new',rate:LAPTOP_RATE,status:'available'},
+    {kind:'laptop',id:'l4',name:'Lenovo IdeaPad Slim 3',owner:'Meghana P',batch:'MECH - 1st year',upi:'meghana@ybl',lphone:'9876500004',cpu:'Intel Core i3 10th Gen',ram:'8 GB DDR4',storage:'1 TB HDD',gpu:'Integrated UHD',display:'15.6" HD',battery:'4 hours',os:'Windows 10',cond:'Fair',rate:LAPTOP_RATE,status:'available'},
+    {kind:'accessory',id:'a1',name:'Logitech M331 Silent Mouse',cat:'mouse',worth:800,details:'Wireless, silent clicks, USB receiver',cond:'Good',owner:'Arjun Reddy',batch:'CSE - 3rd year',upi:'arjun@oksbi',lphone:'9876500001',rate:accRate(800),status:'available'},
+    {kind:'accessory',id:'a2',name:'Redragon K552 Mechanical Keyboard',cat:'keyboard',worth:2500,details:'Blue switches, RGB backlight, TKL',cond:'Like new',owner:'Rohit S',batch:'CSE - 2nd year',upi:'rohit@oksbi',lphone:'9876500005',rate:accRate(2500),status:'available'},
+    {kind:'accessory',id:'a3',name:'boAt Rockerz 450 Headphones',cat:'headphones',worth:1500,details:'Bluetooth 5.0, 15 hr battery',cond:'Good',owner:'Sneha Rao',batch:'ECE - 2nd year',upi:'sneha@okaxis',lphone:'9876500002',rate:accRate(1500),status:'available'},
+    {kind:'accessory',id:'a4',name:'WD My Passport 1TB',cat:'harddisk',worth:4500,details:'Portable HDD, USB 3.0',cond:'Good',owner:'Karthik Varma',batch:'IT - 4th year',upi:'karthik@okhdfc',lphone:'9876500003',rate:accRate(4500),status:'available'},
+    {kind:'accessory',id:'a5',name:'Laptop Cooling Pad',cat:'other',worth:1200,details:'Dual fan, adjustable stand',cond:'Good',owner:'Meghana P',batch:'MECH - 1st year',upi:'meghana@ybl',lphone:'9876500004',rate:accRate(1200),status:'available'},
+    {kind:'accessory',id:'a6',name:'Logitech C270 Webcam',cat:'other',worth:2000,details:'720p HD, built-in mic',cond:'Like new',owner:'Rohit S',batch:'CSE - 2nd year',upi:'rohit@oksbi',lphone:'9876500005',rate:accRate(2000),status:'available'}
+  ],
+  rentals: []
+};
+
+let db;
+try { db = JSON.parse(localStorage.getItem(KEY)) || structuredClone(seed); } catch(e){ db = structuredClone(seed); }
+const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(db)); }catch(e){} updateBadges(); };
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = n => '₹' + n;
+const costFor = (mins, rate) => Math.ceil(mins * rate / 60);
+const minsSince = (start, now) => Math.max(1, Math.ceil((now - start) / 60000));
+const findItem = id => db.items.find(x => x.id === id);
+const methodName = m => m === 'cod' ? 'Cash on Delivery' : 'UPI';
+const isPhone = p => /^[6-9]\d{9}$/.test(p);
+const mask = p => '******' + String(p||'').slice(-4);
+const digits = (el, n = 10) => { el.value = el.value.replace(/\D/g, '').slice(0, n); };
+
+/* lender identity for this browser tab (demo: no real login yet) */
+let me = '';
+try { me = sessionStorage.getItem('rentlap_me') || ''; } catch(e){}
+function setMe(p){ me = p; try{ sessionStorage.setItem('rentlap_me', p); }catch(e){} }
+
+function toast(msg, err){
+  const t = $('#toast'); t.textContent = msg; t.className = 'toast show' + (err ? ' err' : '');
+  clearTimeout(toast.t); toast.t = setTimeout(()=> t.className='toast', 3200);
+}
+
+/* ---- tiny QR code generator (byte mode, error correction M, versions 1-12) ---- */
+const QR_ECC = [0,10,16,26,18,24,16,18,22,22,26,30,22];   // EC codewords per block, level M
+const QR_BLK = [0,1,1,1,2,2,4,4,4,5,5,5,8];               // number of blocks, level M
+function qrRawModules(v){
+  let r = (16*v + 128)*v + 64;
+  if(v >= 2){ const a = Math.floor(v/7) + 2; r -= (25*a - 10)*a - 55; if(v >= 7) r -= 36; }
+  return r;
+}
+function qrGfMul(x, y){ let z = 0; for(let i = 7; i >= 0; i--){ z = (z << 1) ^ ((z >>> 7) * 0x11D); z ^= ((y >>> i) & 1) * x; } return z; }
+function qrRsDivisor(deg){
+  const r = new Array(deg).fill(0); r[deg-1] = 1; let root = 1;
+  for(let i = 0; i < deg; i++){ for(let j = 0; j < deg; j++){ r[j] = qrGfMul(r[j], root); if(j+1 < deg) r[j] ^= r[j+1]; } root = qrGfMul(root, 2); }
+  return r;
+}
+function qrRsRemainder(data, div){
+  const r = new Array(div.length).fill(0);
+  for(const b of data){ const f = b ^ r.shift(); r.push(0); div.forEach((c, i) => { r[i] ^= qrGfMul(c, f); }); }
+  return r;
+}
+function qrMatrix(text){
+  const bytes = Array.from(new TextEncoder().encode(text));
+  let ver = 1;
+  for(; ver <= 12; ver++){
+    const cap = Math.floor(qrRawModules(ver)/8) - QR_ECC[ver]*QR_BLK[ver];
+    if(4 + (ver <= 9 ? 8 : 16) + bytes.length*8 <= cap*8) break;
+  }
+  if(ver > 12) throw new Error('QR text too long');
+  const dataCap = Math.floor(qrRawModules(ver)/8) - QR_ECC[ver]*QR_BLK[ver];
+
+  const bits = [];
+  const put = (val, len) => { for(let i = len-1; i >= 0; i--) bits.push((val >>> i) & 1); };
+  put(4, 4); put(bytes.length, ver <= 9 ? 8 : 16); bytes.forEach(b => put(b, 8));
+  put(0, Math.min(4, dataCap*8 - bits.length));
+  while(bits.length % 8) bits.push(0);
+  const data = [];
+  for(let i = 0; i < bits.length; i += 8) data.push(parseInt(bits.slice(i, i+8).join(''), 2));
+  for(let pad = 0xEC; data.length < dataCap; pad ^= 0xEC ^ 0x11) data.push(pad);
+
+  // error correction + interleave
+  const nb = QR_BLK[ver], eccLen = QR_ECC[ver], raw = Math.floor(qrRawModules(ver)/8);
+  const shortN = nb - raw % nb, shortLen = Math.floor(raw/nb), div = qrRsDivisor(eccLen), blocks = [];
+  for(let i = 0, k = 0; i < nb; i++){
+    const dat = data.slice(k, k + shortLen - eccLen + (i < shortN ? 0 : 1)); k += dat.length;
+    const ecc = qrRsRemainder(dat, div);
+    if(i < shortN) dat.push(0);
+    blocks.push(dat.concat(ecc));
+  }
+  const all = [];
+  for(let i = 0; i < blocks[0].length; i++) blocks.forEach((b, j) => { if(i !== shortLen - eccLen || j >= shortN) all.push(b[i]); });
+
+  // draw
+  const size = ver*4 + 17;
+  const mod = Array.from({length: size}, () => new Array(size).fill(false));
+  const fn  = Array.from({length: size}, () => new Array(size).fill(false));
+  const setF = (x, y, v) => { mod[y][x] = v; fn[y][x] = true; };
+  for(let i = 0; i < size; i++){ setF(6, i, i % 2 === 0); setF(i, 6, i % 2 === 0); }
+  const finder = (cx, cy) => {
+    for(let dy = -4; dy <= 4; dy++) for(let dx = -4; dx <= 4; dx++){
+      const d = Math.max(Math.abs(dx), Math.abs(dy)), x = cx + dx, y = cy + dy;
+      if(x >= 0 && x < size && y >= 0 && y < size) setF(x, y, d !== 2 && d !== 4);
+    }
+  };
+  finder(3, 3); finder(size-4, 3); finder(3, size-4);
+  const na = ver === 1 ? 0 : Math.floor(ver/7) + 2;
+  const ap = [];
+  if(na){
+    const step = Math.ceil((ver*4 + 4)/(na*2 - 2))*2;
+    ap.push(6); for(let pos = size - 7; ap.length < na; pos -= step) ap.splice(1, 0, pos);
+  }
+  for(let i = 0; i < ap.length; i++) for(let j = 0; j < ap.length; j++){
+    if((i === 0 && j === 0) || (i === 0 && j === ap.length-1) || (i === ap.length-1 && j === 0)) continue;
+    for(let dy = -2; dy <= 2; dy++) for(let dx = -2; dx <= 2; dx++) setF(ap[i]+dx, ap[j]+dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+  }
+  const bit = (x, i) => ((x >>> i) & 1) !== 0;
+  const drawFormat = mask => {
+    const d = (0 << 3) | mask;                       // level M = 00
+    let rem = d; for(let i = 0; i < 10; i++) rem = (rem << 1) ^ ((rem >>> 9) * 0x537);
+    const f = ((d << 10) | rem) ^ 0x5412;
+    for(let i = 0; i <= 5; i++) setF(8, i, bit(f, i));
+    setF(8, 7, bit(f, 6)); setF(8, 8, bit(f, 7)); setF(7, 8, bit(f, 8));
+    for(let i = 9; i < 15; i++) setF(14 - i, 8, bit(f, i));
+    for(let i = 0; i < 8; i++) setF(size - 1 - i, 8, bit(f, i));
+    for(let i = 8; i < 15; i++) setF(8, size - 15 + i, bit(f, i));
+    setF(8, size - 8, true);
+  };
+  drawFormat(0);
+  if(ver >= 7){
+    let rem = ver; for(let i = 0; i < 12; i++) rem = (rem << 1) ^ ((rem >>> 11) * 0x1F25);
+    const v = (ver << 12) | rem;
+    for(let i = 0; i < 18; i++){ const a = size - 11 + i % 3, b = Math.floor(i/3); setF(a, b, bit(v, i)); setF(b, a, bit(v, i)); }
+  }
+  // data placement
+  let bi = 0;
+  for(let right = size - 1; right >= 1; right -= 2){
+    if(right === 6) right = 5;
+    for(let vert = 0; vert < size; vert++) for(let j = 0; j < 2; j++){
+      const x = right - j, up = ((right + 1) & 2) === 0, y = up ? size - 1 - vert : vert;
+      if(!fn[y][x] && bi < all.length*8){ mod[y][x] = bit(all[bi >>> 3], 7 - (bi & 7)); bi++; }
+    }
+  }
+  const applyMask = m => {
+    for(let y = 0; y < size; y++) for(let x = 0; x < size; x++){
+      let inv;
+      switch(m){
+        case 0: inv = (x + y) % 2 === 0; break;
+        case 1: inv = y % 2 === 0; break;
+        case 2: inv = x % 3 === 0; break;
+        case 3: inv = (x + y) % 3 === 0; break;
+        case 4: inv = (Math.floor(x/3) + Math.floor(y/2)) % 2 === 0; break;
+        case 5: inv = x*y % 2 + x*y % 3 === 0; break;
+        case 6: inv = (x*y % 2 + x*y % 3) % 2 === 0; break;
+        default: inv = ((x + y) % 2 + x*y % 3) % 2 === 0;
+      }
+      if(!fn[y][x] && inv) mod[y][x] = !mod[y][x];
+    }
+  };
+  const penalty = () => {
+    let p = 0;
+    const lines = [];
+    for(let i = 0; i < size; i++){ lines.push(mod[i].map(v => v ? 1 : 0)); lines.push(mod.map(r => r[i] ? 1 : 0)); }
+    for(const l of lines){
+      let run = 1;
+      for(let i = 1; i <= size; i++){
+        if(i < size && l[i] === l[i-1]) run++;
+        else { if(run >= 5) p += run - 2; run = 1; }
+      }
+      const s = l.join('');
+      for(const pat of ['10111010000', '00001011101']){ let k = -1; while((k = s.indexOf(pat, k + 1)) !== -1) p += 40; }
+    }
+    for(let y = 0; y < size-1; y++) for(let x = 0; x < size-1; x++){
+      const c = mod[y][x]; if(c === mod[y][x+1] && c === mod[y+1][x] && c === mod[y+1][x+1]) p += 3;
+    }
+    let dark = 0; mod.forEach(r => r.forEach(v => { if(v) dark++; }));
+    p += Math.floor(Math.abs(dark*20 - size*size*10) / (size*size)) * 10;
+    return p;
+  };
+  let best = 0, bestP = Infinity;
+  for(let m = 0; m < 8; m++){
+    applyMask(m); drawFormat(m);
+    const p = penalty(); if(p < bestP){ bestP = p; best = m; }
+    applyMask(m);
+  }
+  applyMask(best); drawFormat(best);
+  return mod;
+}
+function drawQr(canvas, text, scale = 6){
+  const m = qrMatrix(text), n = m.length, q = 4, px = (n + q*2) * scale;
+  canvas.width = px; canvas.height = px;
+  const c = canvas.getContext('2d');
+  c.fillStyle = '#fff'; c.fillRect(0, 0, px, px);
+  c.fillStyle = '#000';
+  for(let y = 0; y < n; y++) for(let x = 0; x < n; x++) if(m[y][x]) c.fillRect((x+q)*scale, (y+q)*scale, scale, scale);
+}
+
+
+/* QR login: the desktop shows a one-time code, the phone scans it and is signed in */
+let qrPoll = null;
+function qrApi(path, body){
+  return fetch('/api/qr/'+path, body ? {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(body)} : {})
+    .then(r => (r.headers.get('content-type')||'').includes('application/json') ? r.json() : null).catch(()=>null);
+}
+function openQr(){
+  openModal(`<h3>Login on mobile</h3>
+    <div class="qr-wrap"><canvas id="qrCanvas" width="10" height="10" aria-label="QR code to sign in on your phone"></canvas></div>
+    <p class="note" id="qrState" style="text-align:center">Making your code...</p>
+    <div class="actions"><button class="btn ghost" onclick="closeModal()">Close</button><button class="btn cyan" id="qrNew">New code</button></div>`);
+  $('#qrNew').onclick = startQr;
+  startQr();
+}
+async function startQr(){
+  clearInterval(qrPoll);
+  let url = location.href.split(/[?#]/)[0], token = null, msg;
+  if(me){
+    const res = await qrApi('new', {phone: me});
+    if(res && res.ok){ token = res.token; url += '?qr=' + encodeURIComponent(token); msg = 'Scan with your phone camera to sign in as '+mask(me)+'. Valid for 2 minutes, works once.'; }
+    else msg = 'Scan to open RENT LAP on your phone. (The sign-in link needs the backend server.)';
+  } else msg = 'Scan to open RENT LAP on your phone. For a sign-in code, first sign in as a lender on the Requests tab.';
+  const cv = $('#qrCanvas'), note = $('#qrState');
+  if(!cv || !note) return;                       // modal was closed meanwhile
+  drawQr(cv, url); note.textContent = msg;
+  if(token) qrPoll = setInterval(async ()=>{
+    const r = await qrApi('status?token='+encodeURIComponent(token));
+    if(!r) return;
+    if(r.state==='claimed'){ clearInterval(qrPoll); note.textContent = 'Scanned! You are signed in on your phone.'; }
+    else if(r.state==='expired'){ clearInterval(qrPoll); note.textContent = 'This code expired. Tap New code.'; }
+  }, 2000);
+}
+
+/* real SMS via the Node backend (server.js). Returns null when no backend is reachable (static hosting). */
+async function serverOtp(action, r, otp){
+  try{
+    const it = findItem(r.itemId) || {};
+    const res = await fetch('/api/otp/'+action, {method:'POST', headers:{'content-type':'application/json'},
+      body: JSON.stringify({rentalId:r.id, phone:r.phone, otp, item:it.name, owner:it.owner, location:r.location})});
+    if(!(res.headers.get('content-type')||'').includes('application/json')) return null;
+    return await res.json();
+  }catch(e){ return null; }
+}
+
+/* notification SMS (request received, listing confirmed...). Quietly does nothing when no backend is reachable. */
+async function notifySms(type, phone, data){
+  try{
+    const res = await fetch('/api/sms/notify', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({type, phone, ...data})});
+    if(!(res.headers.get('content-type')||'').includes('application/json')) return null;
+    return await res.json();
+  }catch(e){ return null; }
+}
+
+/* simulated SMS to the renter's registered phone */
+let smsT;
+function sendSms(r){
+  const it = findItem(r.itemId) || {name:'your item', owner:'the lender'};
+  const box = $('#sms');
+  box.innerHTML = `<small>&#128241; SMS TO ${mask(r.phone)}</small>
+    <p>RENT LAP: ${esc(it.owner)} approved your request for ${esc(it.name)}. Pickup: ${esc(r.location)}. Share this OTP only when you meet the lender.</p>
+    <div class="otp">${esc(r.otp)}</div>
+    <div class="demo">Demo preview. A live site would send this by real SMS. Tap to close.</div>`;
+  box.classList.add('show');
+  clearTimeout(smsT); smsT = setTimeout(()=> box.classList.remove('show'), 15000);
+}
+$('#sms').onclick = () => $('#sms').classList.remove('show');
+
+/* badges */
+function setBadge(sel, n){ const el = $(sel); if(!el) return; el.textContent = n; el.hidden = !n; }
+function updateBadges(){
+  const pend = me ? db.rentals.filter(r => r.status==='pending' && (findItem(r.itemId)||{}).lphone===me).length : 0;
+  const appr = db.rentals.filter(r => r.status==='approved').length;
+  setBadge('#reqBadge', pend); setBadge('#rentBadge', appr);
+}
+
+/* navigation */
+let view = 'home';
+function show(id){
+  view = id;
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.id===id));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active', b.dataset.v===id));
+  rerender();
+  $('#fab').classList.toggle('hide', id==='list');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function rerender(){
+  if(view==='browse') renderGrid();
+  if(view==='accessories') renderAcc();
+  if(view==='rentals') renderRentals();
+  if(view==='requests') renderRequests();
+}
+document.querySelectorAll('nav button[data-v]').forEach(b=>b.onclick=()=>show(b.dataset.v));
+
+/* cards */
+function footHTML(it){
+  return `<div class="card-foot">
+    <div class="rate">${money(it.rate)}<small> / hour</small></div>
+    <button class="btn ${it.kind==='accessory'?'green':''}" ${it.status!=='available'?'disabled':''} onclick="openRent('${it.id}')">Rent</button>
+  </div>`;
+}
+function badgeHTML(it){
+  const m = {available:['free','AVAILABLE'],reserved:['res','RESERVED'],rented:['busy','RENTED']}[it.status] || ['busy','RENTED'];
+  return `<span class="badge ${m[0]}">${m[1]}</span>`;
+}
+function laptopCard(l,i){
+  return `<article class="card" style="animation-delay:${i*90}ms">
+    ${badgeHTML(l)}
+    <h3>${esc(l.name)}</h3>
+    <div class="owner">Lender: <b>${esc(l.owner)}</b>${l.batch?' &middot; '+esc(l.batch):''}</div>
+    <dl class="specs">
+      <dt>CPU</dt><dd>${esc(l.cpu)}</dd>
+      <dt>RAM</dt><dd>${esc(l.ram)}</dd>
+      <dt>Storage</dt><dd>${esc(l.storage)}</dd>
+      <dt>GPU</dt><dd>${esc(l.gpu||'Integrated')}</dd>
+      <dt>Display</dt><dd>${esc(l.display||'-')}</dd>
+      <dt>Battery</dt><dd>${esc(l.battery||'-')}</dd>
+      <dt>OS</dt><dd>${esc(l.os||'-')}</dd>
+      <dt>Condition</dt><dd>${esc(l.cond)}</dd>
+    </dl>${footHTML(l)}</article>`;
+}
+function accCard(a,i){
+  const c = CATS[a.cat] || CATS.other;
+  return `<article class="card acc" style="animation-delay:${i*90}ms">
+    ${badgeHTML(a)}
+    <span class="chip">${c[1]} ${c[0]}</span>
+    <h3>${esc(a.name)}</h3>
+    <div class="owner">Lender: <b>${esc(a.owner)}</b>${a.batch?' &middot; '+esc(a.batch):''}</div>
+    <dl class="specs">
+      <dt>Details</dt><dd>${esc(a.details||'-')}</dd>
+      <dt>Worth</dt><dd>${money(a.worth)}</dd>
+      <dt>Condition</dt><dd>${esc(a.cond)}</dd>
+    </dl>${footHTML(a)}</article>`;
+}
+
+function renderGrid(){
+  const q = $('#q').value.toLowerCase().trim(), f = $('#filter').value;
+  const list = db.items.filter(l=>{
+    if(l.kind!=='laptop') return false;
+    const hay = [l.name,l.cpu,l.gpu,l.ram,l.owner,l.os].join(' ').toLowerCase();
+    if(q && !hay.includes(q)) return false;
+    if(f==='free' && l.status!=='available') return false;
+    if(f==='gpu' && /integrated|^$/i.test(l.gpu||'')) return false;
+    return true;
+  });
+  $('#grid').innerHTML = list.length ? list.map(laptopCard).join('') : '<div class="empty">No laptops match your search.</div>';
+}
+function renderAcc(){
+  const q = $('#aq').value.toLowerCase().trim(), c = $('#acatFilter').value;
+  const list = db.items.filter(a=>{
+    if(a.kind!=='accessory') return false;
+    if(c!=='all' && a.cat!==c) return false;
+    const hay = [a.name,a.details,a.owner,(CATS[a.cat]||[''])[0]].join(' ').toLowerCase();
+    return !q || hay.includes(q);
+  });
+  $('#accGrid').innerHTML = list.length ? list.map(accCard).join('') : '<div class="empty">No accessories found.</div>';
+}
+$('#q').oninput = renderGrid; $('#filter').onchange = renderGrid;
+$('#aq').oninput = renderAcc; $('#acatFilter').onchange = renderAcc;
+
+/* modal */
+function openModal(html){ $('#modal').innerHTML = html; $('#overlay').classList.add('open'); }
+function closeModal(){ clearInterval(qrPoll); $('#overlay').classList.remove('open'); }
+$('#overlay').addEventListener('mousedown', e=>{ if(e.target.id==='overlay') closeModal(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+
+function fmtMins(m){ const h=Math.floor(m/60), r=m%60; return (h?h+' h ':'')+(r?r+' min':(h?'':'0 min')); }
+
+/* step 1: renter sends a request */
+function openRent(id){
+  const it = findItem(id); if(!it || it.status!=='available') return;
+  const btnCls = it.kind==='accessory' ? 'green' : 'cyan';
+  openModal(`
+    <h3>Rent: ${esc(it.name)}</h3>
+    <div class="field"><label>Your name</label><input id="rName" maxlength="40" placeholder="Your name"></div>
+    <div class="field"><label>Your mobile (10 digits, India)</label>
+      <input id="rPhone" type="tel" inputmode="numeric" maxlength="10" pattern="[6-9][0-9]{9}" placeholder="9876543210" oninput="digits(this)">
+      <p class="note" style="margin-top:6px">The approval OTP will be sent to this number.</p></div>
+    <div class="field"><label>Preferred hand-over spot (optional)</label><input id="rSpot" maxlength="60" placeholder="e.g. Library gate, Hostel B"></div>
+    <div class="field"><label>Payment method</label>
+      <div class="pay-opts">
+        <label class="pay-opt"><input type="radio" name="pm" value="upi" checked><span><b>UPI</b>Pay online</span></label>
+        <label class="pay-opt"><input type="radio" name="pm" value="cod"><span><b>Cash on Delivery</b>Pay cash in hand</span></label>
+      </div>
+    </div>
+    <div class="bill">
+      <div class="line"><span>Rate</span><span>${money(it.rate)} / hour</span></div>
+      <div class="line"><span>Per minute</span><span>&#8377;${(it.rate/60).toFixed(2)}</span></div>
+      <div class="line"><span>Example: 30 min</span><span>${money(costFor(30,it.rate))}</span></div>
+      <div class="line total"><span>Billed</span><span style="font-size:1rem">Exact time used</span></div>
+    </div>
+    <p class="note">Your request goes to <b>${esc(it.owner)}</b> for approval. After approval you get an OTP by SMS, meet at the pickup location, and enter the OTP to start the meter.</p>
+    <div class="actions">
+      <button class="btn ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn ${btnCls}" id="startBtn">Send request</button>
+    </div>`);
+  const pm = () => document.querySelector('input[name=pm]:checked').value;
+  $('#startBtn').onclick = ()=>{
+    const name = $('#rName').value.trim(), phone = $('#rPhone').value.trim();
+    if(!name){ toast('Enter your name', true); return; }
+    if(!isPhone(phone)){ toast('Enter a valid 10-digit Indian mobile number (starts with 6-9)', true); return; }
+    if(phone === it.lphone){ toast("You can't rent your own item", true); return; }
+    const now = Date.now();
+    db.rentals.unshift({id:'r'+now,itemId:it.id,renter:name,phone,spot:$('#rSpot').value.trim(),method:pm(),rate:it.rate,
+      status:'pending',created:now,location:'',otp:null,start:null,returned:null,minutes:null,amount:null});
+    it.status = 'reserved'; save(); closeModal(); renderGrid(); renderAcc();
+    toast('Request sent to '+it.owner+'. Waiting for approval.'); show('rentals');
+    Promise.all([
+      notifySms('request_sent', phone, {item:it.name, owner:it.owner}),
+      notifySms('request_received', it.lphone, {item:it.name, renter:name})
+    ]).then(rs=>{ if(rs[0] && rs[0].ok) toast('SMS sent to you ('+mask(phone)+') and to '+it.owner+'.'); });
+  };
+}
+
+/* lend */
+const kindSel = $('#kind');
+function syncKind(){
+  const acc = kindSel.value==='accessory';
+  $('#fLap').disabled = acc; $('#fAcc').disabled = !acc;
+  $('#fLap').style.display = acc ? 'none' : ''; $('#fAcc').style.display = acc ? '' : 'none';
+}
+kindSel.onchange = syncKind; syncKind();
+function goLend(kind){ kindSel.value = kind; syncKind(); show('list'); }
+$('#aworth').oninput = e => {
+  const w = parseFloat(e.target.value);
+  $('#ratePrev').textContent = w>0 ? 'Rent: '+money(accRate(w))+' / hour' : '';
+};
+$('#lendForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const d = Object.fromEntries(new FormData(e.target).entries());
+  if(!isPhone(d.phone||'')){ toast('Enter a valid 10-digit Indian mobile number (starts with 6-9)', true); return; }
+  const base = {id:(d.kind==='accessory'?'a':'l')+Date.now(),status:'available',kind:d.kind,owner:d.owner,batch:d.batch,upi:d.upi,lphone:d.phone};
+  let item;
+  if(d.kind==='accessory'){
+    const worth = Math.round(parseFloat(d.aworth));
+    item = {...base,name:d.aname,cat:d.acat,worth,details:d.adetails,cond:d.acond,rate:accRate(worth)};
+  } else {
+    item = {...base,name:d.name,cpu:d.cpu,ram:d.ram,storage:d.storage,gpu:d.gpu,display:d.display,battery:d.battery,os:d.os,cond:d.cond,rate:LAPTOP_RATE};
+  }
+  db.items.unshift(item); save();
+  setMe(d.phone);
+  e.target.reset(); kindSel.value = item.kind; syncKind(); $('#ratePrev').textContent='';
+  toast('Published! Requests will appear in the Requests tab.'); show(item.kind==='accessory' ? 'accessories' : 'browse');
+  notifySms('listed', d.phone, {item:item.name, rate:item.rate}).then(r=>{ if(r && r.ok) toast('Listed! Confirmation SMS sent to '+mask(d.phone)+'.'); });
+});
+
+/* step 2: lender approves or declines */
+function saveMe(e){
+  e.preventDefault();
+  const p = $('#mePhone').value.trim();
+  if(!isPhone(p)){ toast('Enter a valid 10-digit Indian mobile number (starts with 6-9)', true); return; }
+  setMe(p); renderRequests(); updateBadges();
+}
+function signOutMe(){ setMe(''); renderRequests(); updateBadges(); }
+
+const STATUS_LABEL = {pending:'Awaiting approval',approved:'Approved: awaiting OTP',active:'In use',returned:'Returned',declined:'Declined',cancelled:'Cancelled'};
+const pill = s => `<span class="status st-${s}">${STATUS_LABEL[s]||s}</span>`;
+const ORDER = {pending:0,approved:1,active:2,returned:3,declined:4,cancelled:5};
+
+function renderRequests(){
+  const meBox = $('#meBox'), list = $('#reqList');
+  if(!me){
+    meBox.innerHTML = `<form class="form" onsubmit="saveMe(event)">
+      <label for="mePhone">Your lender mobile (10 digits, India)</label>
+      <div class="otp-row">
+        <input id="mePhone" type="tel" inputmode="numeric" maxlength="10" oninput="digits(this)" placeholder="9876500001" style="max-width:260px">
+        <button class="btn cyan" type="submit">Show my requests</button>
+      </div>
+      <p class="note">Use the phone number you entered when you lent your item. Demo lenders: 9876500001 (Arjun), 9876500002 (Sneha), 9876500003 (Karthik), 9876500004 (Meghana), 9876500005 (Rohit).</p>
+    </form>`;
+    list.innerHTML = '';
+    return;
+  }
+  meBox.innerHTML = `<div class="otp-row" style="margin-bottom:6px">
+    <span class="note" style="margin:0">Signed in as lender <b>${mask(me)}</b></span>
+    <button class="btn ghost" onclick="signOutMe()">Change</button>
+    <button class="btn cyan" onclick="openQr()">&#128241; Open on my phone</button></div>`;
+  const mine = db.rentals.filter(r => (findItem(r.itemId)||{}).lphone === me)
+    .sort((a,b)=> (ORDER[a.status]-ORDER[b.status]) || (b.created-a.created));
+  if(!mine.length){ list.innerHTML = '<div class="empty">No requests yet. When someone rents your item, it shows up here.</div>'; return; }
+  list.innerHTML = mine.map(r=>{
+    const it = findItem(r.itemId) || {name:'(removed)'};
+    let actions = '', extra = '';
+    if(r.status==='pending') actions = `<button class="btn ghost" onclick="declineReq('${r.id}')">Decline</button><button class="btn cyan" onclick="openApprove('${r.id}')">Approve</button>`;
+    if(r.status==='approved') extra = `<div class="owner">Pickup: <b>${esc(r.location)}</b> &middot; waiting for the renter to enter the OTP</div>`;
+    if(r.status==='active') extra = `<div class="owner">Handed over. The meter is running.</div>`;
+    if(r.status==='returned') extra = `<div class="owner">Used ${fmtMins(r.minutes)}. Collect <b>${money(r.amount)}</b> by ${methodName(r.method)}.</div>`;
+    return `<div class="rental req" style="border-color:var(--yellow)">
+      <div><h3 style="font-family:Orbitron;font-size:1.1rem">${esc(it.name)}</h3>
+        <div class="owner">Renter: <b>${esc(r.renter)}</b> &middot; &#128222; ${esc(r.phone)}</div>
+        <div class="owner">${money(r.rate)}/hr &middot; ${methodName(r.method)}${r.spot?' &middot; Wants: '+esc(r.spot):''}</div>${extra}</div>
+      <div>${pill(r.status)}</div>
+      <div class="actions-row">${actions}</div>
+    </div>`;
+  }).join('');
+}
+
+function openApprove(rid){
+  const r = db.rentals.find(x=>x.id===rid); if(!r || r.status!=='pending') return;
+  const it = findItem(r.itemId) || {name:'item'};
+  openModal(`
+    <h3>Approve request</h3>
+    <div class="bill">
+      <div class="line"><span>Item</span><span>${esc(it.name)}</span></div>
+      <div class="line"><span>Renter</span><span>${esc(r.renter)}</span></div>
+      <div class="line"><span>Phone</span><span>${esc(r.phone)}</span></div>
+      <div class="line"><span>Payment</span><span>${methodName(r.method)}</span></div>
+    </div>
+    <div class="field"><label>Pickup location</label><input id="aLoc" maxlength="80" value="${esc(r.spot)}" placeholder="e.g. Library gate, CSE block ground floor"></div>
+    <p class="note">An OTP will be sent to the renter's registered phone (<b>${mask(r.phone)}</b>). The renter enters it when you meet.</p>
+    <div class="actions">
+      <button class="btn ghost" onclick="closeModal()">Back</button>
+      <button class="btn cyan" id="okBtn">Approve &amp; send OTP</button>
+    </div>`);
+  $('#okBtn').onclick = async ()=>{
+    const loc = $('#aLoc').value.trim();
+    if(!loc){ toast('Enter the pickup location', true); return; }
+    $('#okBtn').disabled = true;
+    r.location = loc;
+    const res = await serverOtp('send', r);
+    if(res && res.ok){ r.otpMode = 'server'; r.otp = null; }
+    else if(res && res.error){ toast(res.error, true); $('#okBtn').disabled = false; return; }
+    else { r.otpMode = 'demo'; r.otp = String(Math.floor(100000 + Math.random()*900000)); }
+    r.status = 'approved'; r.approvedAt = Date.now();
+    save(); closeModal(); renderRequests();
+    if(r.otpMode==='demo') sendSms(r);
+    toast(r.otpMode==='server' ? 'Approved. OTP sent by SMS to '+mask(r.phone)+'.' : 'Approved. Demo mode: OTP shown on screen.');
+  };
+}
+function declineReq(rid){
+  const r = db.rentals.find(x=>x.id===rid); if(!r || r.status!=='pending') return;
+  const it = findItem(r.itemId); r.status = 'declined'; if(it) it.status = 'available';
+  save(); renderRequests(); toast('Request declined.');
+}
+
+/* step 3: renter enters the OTP at the pickup location */
+function cancelReq(rid){
+  const r = db.rentals.find(x=>x.id===rid); if(!r || !(r.status==='pending'||r.status==='approved')) return;
+  const it = findItem(r.itemId); r.status = 'cancelled'; if(it) it.status = 'available';
+  save(); renderRentals(); toast('Request cancelled.');
+}
+async function resendOtp(rid){
+  const r = db.rentals.find(x=>x.id===rid); if(!r || r.status!=='approved') return;
+  if(r.otpMode==='server'){
+    const res = await serverOtp('send', r);
+    toast(res && res.ok ? 'OTP sent again to '+mask(r.phone)+'.' : ((res && res.error) || 'Could not send the OTP. Try again.'), !(res && res.ok));
+  } else { sendSms(r); toast('OTP sent again.'); }
+}
+async function verifyOtp(rid){
+  const r = db.rentals.find(x=>x.id===rid); if(!r || r.status!=='approved') return;
+  const v = ($('#otp_'+rid).value || '').trim();
+  if(v.length!==6){ toast('Enter the 6-digit OTP', true); return; }
+  if(r.otpMode==='server'){
+    const res = await serverOtp('verify', r, v);
+    if(!(res && res.ok)){ toast((res && res.error) || 'Wrong OTP. Check the SMS and try again.', true); return; }
+  } else if(v!==r.otp){ toast('Wrong OTP. Check the SMS and try again.', true); return; }
+  const it = findItem(r.itemId);
+  r.status = 'active'; r.start = Date.now(); if(it) it.status = 'rented';
+  save(); renderRentals(); toast('OTP verified. Rental started!');
+}
+
+/* rentals (renter side) */
+const pad = n => String(n).padStart(2,'0');
+function clock(ms){ const s=Math.floor(Math.max(0,ms)/1000); return pad(Math.floor(s/3600))+':'+pad(Math.floor(s%3600/60))+':'+pad(s%60); }
+
+function renderRentals(){
+  const box = $('#rentalList');
+  if(!db.rentals.length){ box.innerHTML='<div class="empty">No rentals yet. Go grab some tech!</div>'; return; }
+  box.innerHTML = db.rentals.map(r=>{
+    const it = findItem(r.itemId) || {name:'(removed)',owner:'-',upi:'-'};
+    const head = `<h3 style="font-family:Orbitron;font-size:1.1rem">${esc(it.name)}</h3>
+      <div class="owner">Renter: ${esc(r.renter)} &middot; Lender: <b>${esc(it.owner)}</b></div>`;
+    if(r.status==='pending') return `<div class="rental" style="border-color:var(--yellow)">
+      <div>${head}<div class="owner">Request sent. Waiting for ${esc(it.owner)} to approve.</div></div>
+      ${pill('pending')}<button class="btn ghost" onclick="cancelReq('${r.id}')">Cancel</button></div>`;
+    if(r.status==='approved') return `<div class="rental" style="border-color:var(--cyan)">
+      <div>${head}
+        <div class="owner">Approved! Go to <b style="color:var(--cyan)">${esc(r.location)}</b>.</div>
+        <div class="owner">OTP sent to ${mask(r.phone)}. Enter it when you meet the lender.</div></div>
+      <div class="otp-row">
+        <input id="otp_${r.id}" type="tel" inputmode="numeric" maxlength="6" placeholder="------" aria-label="6-digit OTP" oninput="digits(this,6)">
+        <button class="btn cyan" onclick="verifyOtp('${r.id}')">Verify &amp; start</button>
+        <button class="btn ghost" onclick="resendOtp('${r.id}')">Resend OTP</button>
+        <button class="btn ghost" onclick="cancelReq('${r.id}')">Cancel</button>
+      </div></div>`;
+    if(r.status==='declined') return `<div class="rental" style="border-color:var(--red);opacity:.85">
+      <div>${head}<div class="owner">${esc(it.owner)} declined this request. Try another item.</div></div>${pill('declined')}</div>`;
+    if(r.status==='cancelled') return `<div class="rental" style="border-color:var(--red);opacity:.7">
+      <div>${head}</div>${pill('cancelled')}</div>`;
+    if(r.status==='returned') return `
+      <div class="rental done">
+        <div>${head}</div>
+        <div>Used ${fmtMins(r.minutes)} at ${money(r.rate)}/hr<br>Paid ${money(r.amount)} via ${methodName(r.method)}</div>
+        <div class="rate">RETURNED</div>
+      </div>`;
+    return `
+      <div class="rental" data-start="${r.start}" data-rate="${r.rate}">
+        <div>${head}
+          <div class="owner">${money(r.rate)}/hr &middot; ${methodName(r.method)}${r.method==='upi'?' ('+esc(it.upi)+')':''}</div></div>
+        <div class="meter"><div class="timer">00:00:00</div><small>TIME USED</small></div>
+        <div class="meter"><div class="cost">${money(0)}</div><small>COST SO FAR</small></div>
+        <button class="btn" onclick="openReturn('${r.id}')">Return</button>
+      </div>`;
+  }).join('');
+  tick();
+}
+function tick(){
+  const now = Date.now();
+  document.querySelectorAll('.rental[data-start]').forEach(el=>{
+    const start = +el.dataset.start, rate = +el.dataset.rate;
+    el.querySelector('.timer').textContent = clock(now - start);
+    el.querySelector('.cost').textContent = money(costFor(minsSince(start, now), rate));
+  });
+}
+setInterval(tick, 1000);
+
+/* return + pay for time taken */
+function openReturn(rid){
+  const r = db.rentals.find(x=>x.id===rid); if(!r || r.status!=='active') return;
+  const it = findItem(r.itemId) || {name:'-',owner:'-',upi:'-'};
+  const stop = Date.now();
+  const mins = minsSince(r.start, stop);
+  const amount = costFor(mins, r.rate);
+  const cod = r.method==='cod';
+  openModal(`
+    <h3>Return &amp; pay</h3>
+    <div class="bill">
+      <div class="line"><span>Item</span><span>${esc(it.name)}</span></div>
+      <div class="line"><span>Time used</span><span>${fmtMins(mins)}</span></div>
+      <div class="line"><span>Rate</span><span>${money(r.rate)} / hour</span></div>
+      <div class="line"><span>Payment</span><span>${methodName(r.method)}</span></div>
+      <div class="line total"><span>Total</span><span>${money(amount)}</span></div>
+    </div>
+    <p class="note">${cod
+      ? 'Hand <b>'+money(amount)+'</b> in cash to <b>'+esc(it.owner)+'</b> when you give the item back.'
+      : 'Pay <b>'+money(amount)+'</b> to <b>'+esc(it.owner)+'</b> at UPI ID <b>'+esc(it.upi)+'</b>, then confirm below.'}</p>
+    <div class="actions">
+      <button class="btn ghost" onclick="closeModal()">Keep using</button>
+      <button class="btn cyan" id="retBtn">${cod?'Cash paid & return':'UPI paid & return'}</button>
+    </div>`);
+  $('#retBtn').onclick = ()=>{
+    r.status = 'returned'; r.returned = stop; r.minutes = mins; r.amount = amount;
+    if(it.id) it.status = 'available';
+    save(); closeModal(); renderRentals(); renderGrid(); renderAcc();
+    toast('Returned. Total '+money(amount)+'. Thanks!');
+  };
+}
+
+/* live sync between browser tabs (lets you test lender and renter side by side) */
+window.addEventListener('storage', e=>{
+  if(e.key!==KEY || !e.newValue) return;
+  const old = db;
+  try { db = JSON.parse(e.newValue); } catch(err){ db = old; return; }
+  db.rentals.forEach(r=>{
+    const o = old.rentals.find(x=>x.id===r.id);
+    const it = findItem(r.itemId);
+    if(!o && it && me && it.lphone===me) toast('New rental request for '+it.name+'!');
+    else if(o && o.status==='pending' && r.status==='approved' && r.otp) sendSms(r);
+  });
+  updateBadges(); rerender();
+});
+
+updateBadges(); renderGrid(); renderAcc();
+
+/* phone side: opened from a QR code (?qr=token) */
+(async function claimFromUrl(){
+  const t = new URLSearchParams(location.search).get('qr'); if(!t) return;
+  try{ history.replaceState(null, '', location.pathname); }catch(e){}
+  const j = await qrApi('claim', {token: t});
+  if(j && j.ok){ setMe(j.phone); updateBadges(); show('requests'); toast('Signed in on this phone as '+mask(j.phone)); }
+  else toast((j && j.error) || 'This QR code is invalid or expired.', true);
+})();
+</script>
+</body>
+</html>
